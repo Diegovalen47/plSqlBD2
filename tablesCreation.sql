@@ -18,7 +18,3 @@ CREATE TABLE coopexsocio (
   PRIMARY KEY(socio, coope),
   sc_acumulado NUMBER(8)
 );
-
-
--- pequese de este
-SELECT * FROM socio;

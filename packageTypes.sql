@@ -1,0 +1,8 @@
+CREATE PACKAGE types IS
+
+  -- Array de enteros
+  TYPE arrayInt IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;
+  -- Array de strings
+  TYPE arrayString IS TABLE OF VARCHAR2(100) INDEX BY BINARY_INTEGER;
+
+END;
