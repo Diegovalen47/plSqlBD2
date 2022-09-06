@@ -20,5 +20,5 @@ CREATE TABLE coopexsocio (
 );
 
 
-
+-- pequese de este
 SELECT * FROM socio;
