@@ -18,3 +18,7 @@ CREATE TABLE coopexsocio (
   PRIMARY KEY(socio, coope),
   sc_acumulado NUMBER(8)
 );
+
+
+
+SELECT * FROM socio;
