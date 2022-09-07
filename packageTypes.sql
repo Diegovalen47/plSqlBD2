@@ -98,9 +98,3 @@ CREATE OR REPLACE PACKAGE BODY util IS
   end;
 
 END;
-
-
-begin
-  util.fillCooperativa(1);
-end;
-/
