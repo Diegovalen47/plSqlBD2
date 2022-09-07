@@ -1,6 +1,6 @@
 -- Casos de prueba Cooperativa
 INSERT INTO cooperativa VALUES (1, 'Faithless', NULL);
-INSERT INTO cooperativa VALUES (4, 'El Cerdito', 0);
+INSERT INTO cooperativa VALUES (4, 'El Cerdito', 453);
 INSERT INTO cooperativa VALUES (5, 'Su Vaquita', NULL);
 -- Casos de prueba Socio
 INSERT INTO socio VALUES (50, 'Rhianna Kenny', NULL);

@@ -85,7 +85,7 @@ CREATE OR REPLACE PACKAGE BODY util IS
         );
         cont := cont + 1;
         -- Obtenemos dinamicamente insertados hasta el momento
-        SELECT COUNT(*) INTO cont FROM cooperativa;
+        SELECT COUNT(*) INTO cont FROM COOPERATIVA;
         -- controlamos indices duplicados
         exception
         when DUP_VAL_ON_INDEX then
