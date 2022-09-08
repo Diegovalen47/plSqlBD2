@@ -1,100 +1,107 @@
 CREATE OR REPLACE PACKAGE util IS
 
-  -- Array de enteros
-  TYPE arrayInt IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;
-  -- Array de strings
-  TYPE arrayString IS TABLE OF VARCHAR2(100) INDEX BY BINARY_INTEGER;
-
-  PROCEDURE fillSocio(numRows IN NUMBER);
-
-  PROCEDURE fillCooperativa(numRows IN NUMBER);
+    -- Array de enteros
+    TYPE arrayInt IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;
+    -- Array de strings
+    TYPE arrayString IS TABLE OF VARCHAR2(100) INDEX BY BINARY_INTEGER;
+    PROCEDURE fillSocio(numRows In NUMBER);
+    PROCEDURE fillCoo(numRows In NUMBER);
 
 END;
 
 CREATE OR REPLACE PACKAGE BODY util IS
 
-  PROCEDURE fillSocio(numRows IN NUMBER) AS
+    PROCEDURE fillSocio(numRows IN NUMBER) AS
 
-  sociosNames util.ARRAYSTRING;
-  sociosLastNames util.ARRAYSTRING;
-  cont NUMBER(4) := 0;
+    sociosNames util.ARRAYSTRING;
+    sociosLastNames util.ARRAYSTRING;
+    cont NUMBER(4) := 0;
 
-  begin
+    begin
 
-    --Nombres
-    sociosNames(1) := 'Rhianna';
-    sociosNames(2) := 'Kyla';
-    sociosNames(3) := 'Cass';
-    --Apellidos
-    sociosLastNames(1) := 'Kenny';
-    sociosLastNames(2) := 'La Grange';
-    sociosLastNames(3) := 'Fox';
+      --Nombres
+      sociosNames(1) := 'Rhianna';
+      sociosNames(2) := 'Kyla';
+      sociosNames(3) := 'Cass';
+      sociosNames(4) := 'Tony';
+      sociosNames(5) := 'Steve';
+      sociosNames(6) := 'Bruce';
+      sociosNames(7) := 'Natalia';
+      sociosNames(8) := 'Wanda';
+      sociosNames(9) := 'John';
+      --Apellidos
+      sociosLastNames(1) := 'Kenny';
+      sociosLastNames(2) := 'La Grange';
+      sociosLastNames(3) := 'Fox';
+      sociosLastNames(4) := 'Stark';
+      sociosLastNames(5) := 'Rogers';
+      sociosLastNames(6) := 'Banner';
+      sociosLastNames(7) := 'Romanova';
+      sociosLastNames(8) := 'Maximoff';
+      sociosLastNames(9) := 'Snow';
 
-    while cont < numRows LOOP
-      -- Bloque para controlar duplicados con exception
-      begin
+      while cont < numRows LOOP
+        -- Bloque para controlar duplicados con exception
+        begin
 
-        INSERT INTO
-          socio
-        VALUES(
-          ceil(DBMS_RANDOM.value(1, 10000)),
-          sociosNames(ceil(DBMS_RANDOM.value(1, 3)))||' '||sociosLastNames(ceil(DBMS_RANDOM.value(1, 3))),
-          ceil(DBMS_RANDOM.value(2, 4))
-        );
-        -- Obtenemos dinamicamente insertados hasta el momento
-        SELECT COUNT(*) INTO cont FROM socio;
-        -- controlamos indices duplicados
-        exception
-        when DUP_VAL_ON_INDEX then
-          NULL;
+          INSERT INTO
+            socio
+          VALUES(
+            ceil(DBMS_RANDOM.value(1, 10000)),
+            sociosNames(ceil(DBMS_RANDOM.value(1, 9)))||' '||sociosLastNames(ceil(DBMS_RANDOM.value(1, 9))),
+            ceil(DBMS_RANDOM.value(2, 4))
+          );
+          -- Obtenemos dinamicamente insertados hasta el momento
+          SELECT COUNT(*) INTO cont FROM socio;
+          -- controlamos indices duplicados
+          exception
+          when DUP_VAL_ON_INDEX then
+            NULL;
 
-      end;
+        end;
 
-    end loop;
+      end loop;
 
-  end;
+    end;
 
-  PROCEDURE fillCooperativa(numRows IN NUMBER) AS
-
-  cooperativasNames util.ARRAYSTRING;
-  cooperativasLastNames util.ARRAYSTRING;
-  cont NUMBER(4) := 1;
-
-  begin
-    DBMS_OUTPUT.PUT_LINE('dadadad');
-    --Nombres
-    cooperativasNames(1) := 'Faithless';
-    cooperativasNames(2) := 'El Cerdito';
-    cooperativasNames(3) := 'Su Vaquita';
-    --tipos de cooperativa
-    cooperativasLastNames(1) := 'S.A.S';
-    cooperativasLastNames(2) := 'S.A';
-    cooperativasLastNames(3) := 'S.C.S';
-
-
-    while cont <= numRows LOOP
-      -- Bloque para controlar duplicados con exception
-      begin
-        DBMS_OUTPUT.PUT_LINE('dentro while');
-        INSERT INTO
-          cooperativa
-        VALUES(
-          cont,
-          cooperativasNames(ceil(DBMS_RANDOM.value(1, 3)))||' '||cooperativasLastNames(ceil(DBMS_RANDOM.value(1, 3))),
-          DBMS_RANDOM.value(2, 9)
-        );
-        cont := cont + 1;
-        -- Obtenemos dinamicamente insertados hasta el momento
-        SELECT COUNT(*) INTO cont FROM COOPERATIVA;
-        -- controlamos indices duplicados
-        exception
-        when DUP_VAL_ON_INDEX then
-          NULL;
-
-      end;
-
-    end loop;
-
-  end;
-
+    PROCEDURE fillCoo(numRows IN NUMBER) IS
+    nom util.ARRAYSTRING;
+    lastNom util.ARRAYSTRING;
+    names varchar2(100);
+        begin
+            -- Nombres de cooperativas
+            nom(1) := 'Faithless';
+            nom(2) := 'El Cerdito';
+            nom(3) := 'Su Vaquita';
+            nom(4) := 'Jhon F Kennedy';
+            nom(5) := 'CooperNK';
+            nom(6) := 'Milagritos';
+            nom(7) := 'Cotrafa';
+            nom(8) := 'CF de Antioquia';
+            nom(9) := 'Sin ti';
+            nom(10) := 'Las Americas';
+            nom(11) := 'Confiar';
+            nom(12) := 'Superate';
+            --tipos de cooperativa
+            lastNom(1) := 'S.A.S';
+            lastNom(2) := 'S.A';
+            lastNom(3) := 'S.C.S';
+            lastNom(4) := 'Comanditas';
+            lastNom(5) := 'L.T.D.A';
+            lastNom(6) := 'Colectiva';
+            lastNom(7) := 'Unipersonal';
+            lastNom(7) := 'Anonima';
+            for i in 1 .. numRows LOOP
+                begin
+                    names := nom(ceil(DBMS_RANDOM.VALUE(1,12)))||' '||lastNom(ceil(DBMS_RANDOM.VALUE(1,7)));
+                    insert into COOPERATIVA
+                    values(i,names,null);
+                    exception when DUP_VAL_ON_INDEX then
+                        DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+                        DBMS_OUTPUT.PUT_LINE('Error con unique: '||names);
+                    when others then
+                        DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+                end;
+            end loop;
+        end;
 END;
