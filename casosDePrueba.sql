@@ -20,3 +20,6 @@ INSERT INTO coopexsocio VALUES (60, 1, NULL);
 INSERT INTO coopexsocio VALUES (99, 1, 453);
 INSERT INTO coopexsocio VALUES (60, 5, 345354);
 INSERT INTO coopexsocio VALUES (99, 5, NULL);
+
+-- Caso de prueba updateTriggerCoop
+UPDATE COOPERATIVA set C_ACUMULADO = C_ACUMULADO + 60 where CODIGO = 5;
