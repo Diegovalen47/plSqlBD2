@@ -1,8 +1,8 @@
 CREATE OR REPLACE TRIGGER controlInsertCoopexsocio
 BEFORE INSERT ON COOPEXSOCIO
 FOR EACH ROW
-BEGIN
-  IF (:NEW.sc_acumulado is null) OR (:NEW.sc_acumulado != 0) THEN
+begin
+  if (:NEW.sc_acumulado IS NULL) or (:NEW.sc_acumulado != 0) then
     :NEW.sc_acumulado := 0;
-  END IF;
-END;
+  end if;
+end;

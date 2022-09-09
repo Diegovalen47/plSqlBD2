@@ -1,8 +1,8 @@
 CREATE OR REPLACE TRIGGER controlInsertCooperativa
 BEFORE INSERT ON COOPERATIVA
 FOR EACH ROW
-BEGIN
-  IF (:NEW.c_acumulado is null) OR (:NEW.c_acumulado != 0) THEN
+begin
+  if (:NEW.c_acumulado IS NULL) or (:NEW.c_acumulado != 0) then
     :NEW.c_acumulado := 0;
-  END IF;
-END;
+  end if;
+end;

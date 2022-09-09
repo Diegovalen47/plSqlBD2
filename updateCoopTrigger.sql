@@ -2,30 +2,26 @@ CREATE OR REPLACE TRIGGER controlUpdateCoop
 BEFORE UPDATE OF C_ACUMULADO ON COOPERATIVA
 FOR EACH ROW
 declare
-  TYPE socioType IS TABLE OF socio%ROWTYPE;
-  arraySocio socioType;
+  -- Array para guardar registros de socios
+  arraySocio util.socioType;
+
   incrementoTotal NUMBER(8);
   incrementoUnitario NUMBER(11,3);
+
   coopeCodigo NUMBER(8) := :OLD.CODIGO;
+
   INCREMENTO_NEGATIVO EXCEPTION;
   INCREMENTO_NULO EXCEPTION;
+
 begin
 
   incrementoTotal := :NEW.C_ACUMULADO - :OLD.C_ACUMULADO;
 
-  IF incrementoTotal > 0 THEN
-    SELECT
-      s.IDSOCIO,
-      s.NOMBRE,
-      s.S_ACUMULADO
-    BULK COLLECT INTO
-      arraySocio
-    FROM
-      SOCIO s JOIN COOPEXSOCIO cs
-    ON
-      s.IDSOCIO = cs.SOCIO
-    WHERE
-      cs.COOPE = :OLD.CODIGO
+  if incrementoTotal > 0 then
+
+    SELECT s.IDSOCIO, s.NOMBRE, s.S_ACUMULADO BULK COLLECT INTO arraySocio
+    FROM SOCIO s JOIN COOPEXSOCIO cs ON s.IDSOCIO = cs.SOCIO
+    WHERE cs.COOPE = :OLD.CODIGO
     ORDER BY s.IDSOCIO;
 
     incrementoUnitario := incrementoTotal/arraySocio.COUNT;
@@ -36,22 +32,22 @@ begin
     FORALL i IN 1..arraySocio.COUNT
       UPDATE COOPEXSOCIO SET SC_ACUMULADO = SC_ACUMULADO + incrementoUnitario WHERE SOCIO = arraySocio(i).IDSOCIO AND COOPE = coopeCodigo;
 
-  ELSIF incrementoTotal = 0 THEN
-    RAISE INCREMENTO_NULO;
-  ELSE
-    RAISE INCREMENTO_NEGATIVO;
+  elsif incrementoTotal = 0 then
+    raise INCREMENTO_NULO;
+  else
+    raise INCREMENTO_NEGATIVO;
 
   end if;
 
-  EXCEPTION
-    WHEN INCREMENTO_NULO THEN
+  exception
+    when INCREMENTO_NULO then
       DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' No se incrementa nada');
-    WHEN INCREMENTO_NEGATIVO THEN
+    when INCREMENTO_NEGATIVO then
       DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' Incremento negativo, por favor ingresa un incremento positivo');
       :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
-    WHEN ZERO_DIVIDE THEN
+    when ZERO_DIVIDE then
       DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' La cooperativa ingresada no tiene socios');
-    WHEN OTHERS THEN
-      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' VIDA CATREHIJUEMALPARIDA');
-
+      :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
+    when OTHERS then
+      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' Entrando en excepcion others');
 end;
