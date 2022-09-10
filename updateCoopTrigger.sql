@@ -52,3 +52,4 @@ begin
     DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
 
 end;
+/

@@ -11,3 +11,4 @@ begin
     DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
 
 end;
+/

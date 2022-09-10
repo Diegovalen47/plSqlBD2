@@ -5,6 +5,7 @@ CREATE OR REPLACE PACKAGE extra IS
     PROCEDURE fillCoo(numRows In NUMBER);
 
 END;
+/
 
 CREATE OR REPLACE PACKAGE BODY extra IS
 
@@ -105,3 +106,4 @@ CREATE OR REPLACE PACKAGE BODY extra IS
     end loop;
   end;
 END;
+/

@@ -12,3 +12,4 @@ CREATE OR REPLACE PACKAGE util IS
     TYPE coopeType IS TABLE OF cooperativa%ROWTYPE;
 
 END;
+/
