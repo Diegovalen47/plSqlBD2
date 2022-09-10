@@ -1,8 +1,14 @@
 CREATE OR REPLACE TRIGGER controlInsertSocio
 BEFORE INSERT ON SOCIO
 FOR EACH ROW
-BEGIN
-  IF (:NEW.s_acumulado is null) OR (:NEW.s_acumulado != 0) THEN
+begin
+
+  if (:NEW.s_acumulado IS NULL) or (:NEW.s_acumulado != 0) then
     :NEW.s_acumulado := 0;
-  END IF;
-END;
+  end if;
+
+  exception
+  when OTHERS then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+
+end;

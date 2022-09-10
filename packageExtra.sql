@@ -95,10 +95,11 @@ CREATE OR REPLACE PACKAGE BODY extra IS
         INSERT INTO COOPERATIVA
         VALUES(i,names,null);
 
-        exception when DUP_VAL_ON_INDEX then
+        exception
+        when DUP_VAL_ON_INDEX then
           DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
           DBMS_OUTPUT.PUT_LINE('Error con unique: '||names);
-        when others then
+        when OTHERS then
           DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
       end;
     end loop;

@@ -10,6 +10,7 @@
 6. coopexsocioInsertTrigger.sql: Trigger de inserción tabla coopexsocio sc_acumulado = 0 (3%)
 7. updateCoopTrigger: Trigger de actualización sobre la tabla cooperativa (25%)
 8. deleteCoopTrigger: Trigger de borrado sobre la tabla cooperativa (15%)
-9. firstProgram: Primer programa del enunciado (20%)
-10. secondProgram: Segundo programa del enunciado (21%)
-11. packageExtra: paquete extra con métodos útiles.
+9. deleteSocioTrigger: Trigger de borrado sobre la tabla socio (10%)
+10. firstProgram: Primer programa del enunciado (20%)
+11. secondProgram: Segundo programa del enunciado (21%)
+12. packageExtra: paquete extra con métodos útiles.

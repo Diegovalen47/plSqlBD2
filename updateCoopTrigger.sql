@@ -2,8 +2,8 @@ CREATE OR REPLACE TRIGGER controlUpdateCoop
 BEFORE UPDATE OF C_ACUMULADO ON COOPERATIVA
 FOR EACH ROW
 declare
-  -- Array para guardar registros de socios
-  arraySocio util.socioType;
+  -- Array para guardar registros de coopexsocio
+  arrayCoopexsocio util.COOPEXSOCIOTYPE;
 
   incrementoTotal NUMBER(8);
   incrementoUnitario NUMBER(11,3);
@@ -18,19 +18,19 @@ begin
   incrementoTotal := :NEW.C_ACUMULADO - :OLD.C_ACUMULADO;
 
   if incrementoTotal > 0 then
+    -- obtenemos socios que pertenecen a la cooperativa a actualizar
+    SELECT SOCIO, COOPE, SC_ACUMULADO BULK COLLECT INTO arrayCoopexsocio
+    FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;
 
-    SELECT s.IDSOCIO, s.NOMBRE, s.S_ACUMULADO BULK COLLECT INTO arraySocio
-    FROM SOCIO s JOIN COOPEXSOCIO cs ON s.IDSOCIO = cs.SOCIO
-    WHERE cs.COOPE = :OLD.CODIGO
-    ORDER BY s.IDSOCIO;
+    incrementoUnitario := incrementoTotal/arrayCoopexsocio.COUNT;
 
-    incrementoUnitario := incrementoTotal/arraySocio.COUNT;
+    forall i in 1..arrayCoopexsocio.COUNT
+      UPDATE SOCIO SET S_ACUMULADO = S_ACUMULADO + incrementoUnitario
+      WHERE IDSOCIO = arrayCoopexsocio(i).SOCIO;
 
-    FORALL i IN 1..arraySocio.COUNT
-      UPDATE SOCIO SET S_ACUMULADO = S_ACUMULADO + incrementoUnitario WHERE IDSOCIO = arraySocio(i).IDSOCIO;
-
-    FORALL i IN 1..arraySocio.COUNT
-      UPDATE COOPEXSOCIO SET SC_ACUMULADO = SC_ACUMULADO + incrementoUnitario WHERE SOCIO = arraySocio(i).IDSOCIO AND COOPE = coopeCodigo;
+    forall i in 1..arrayCoopexsocio.COUNT
+      UPDATE COOPEXSOCIO SET SC_ACUMULADO = SC_ACUMULADO + incrementoUnitario
+      WHERE SOCIO = arrayCoopexsocio(i).SOCIO AND COOPE = coopeCodigo;
 
   elsif incrementoTotal = 0 then
     raise INCREMENTO_NULO;
@@ -40,14 +40,15 @@ begin
   end if;
 
   exception
-    when INCREMENTO_NULO then
-      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' No se incrementa nada');
-    when INCREMENTO_NEGATIVO then
-      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' Incremento negativo, por favor ingresa un incremento positivo');
-      :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
-    when ZERO_DIVIDE then
-      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' La cooperativa ingresada no tiene socios');
-      :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
-    when OTHERS then
-      DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' Entrando en excepcion others');
+  when INCREMENTO_NULO then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' No se incrementa nada');
+  when INCREMENTO_NEGATIVO then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' Incremento negativo, por favor ingresa un incremento positivo');
+    :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
+  when ZERO_DIVIDE then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' La cooperativa ingresada no tiene socios');
+    :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
+  when OTHERS then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
+
 end;
