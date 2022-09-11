@@ -11,9 +11,9 @@ CREATE OR REPLACE PACKAGE BODY extra IS
 
   PROCEDURE fillSocio(numRows IN NUMBER) AS
 
-  sociosNames util.ARRAYSTRING;
-  sociosLastNames util.ARRAYSTRING;
-  cont NUMBER(4) := 0;
+    sociosNames util.ARRAYSTRING;
+    sociosLastNames util.ARRAYSTRING;
+    cont NUMBER(4) := 0;
 
   begin
 
@@ -62,9 +62,10 @@ CREATE OR REPLACE PACKAGE BODY extra IS
 
   PROCEDURE fillCoo(numRows IN NUMBER) IS
 
-  nom util.ARRAYSTRING;
-  lastNom util.ARRAYSTRING;
-  names varchar2(100);
+    nom util.ARRAYSTRING;
+    lastNom util.ARRAYSTRING;
+    names varchar2(100);
+
   begin
     -- Nombres de cooperativas
     nom(1) := 'Faithless';
