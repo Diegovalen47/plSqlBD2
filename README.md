@@ -1,5 +1,12 @@
 # PL/SQL Trabajo Bases de Datos II
 
+## Orden de ejecución del los archivos para que todo funcione:
+
+packageUtil --> tablesCreation --> coopInsertTrigger --> socioInsertTrigger
+--> coopexsocioInsertTrigger --> deleteCoopTrigger --> deleteSocioTrigger
+--> updateCoopTrigger --> firstProgram --> secondProgram
+--> casosDePrueba (casos de prueba del enunciado)
+
 ### Archivos en este repositorio:
 
 1. tablesCreation.sql: Instrucciones para la creacion de las tablas del enunciado
