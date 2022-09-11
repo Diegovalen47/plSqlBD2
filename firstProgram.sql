@@ -46,17 +46,13 @@ begin
       else
         DBMS_OUTPUT.PUT_LINE(contador_impresor||'. (Nombre: '||recorredor.NOMBRE||', Valorsc: '||recorredor.SC_ACUMULADO||')');
       end if;
-
       valor_scAcumulado_socios := valor_scAcumulado_socios+recorredor.SC_ACUMULADO;
       contador_impresor := contador_impresor + 1;
-
     end if;
-
   end loop;
 
   DBMS_OUTPUT.PUT_LINE('}');
   DBMS_OUTPUT.PUT_LINE('Total valores de los socios en la cooperativa: '||valor_scAcumulado_socios);
-
 end;
 /
 

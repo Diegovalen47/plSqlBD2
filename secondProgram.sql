@@ -56,9 +56,7 @@ begin
       DBMS_OUTPUT.PUT_LINE(contador_impresor1||'. '||'(Nombre: '||recorredor.NOMBRE||', Valorsc: '||recorredor.SC_ACUMULADO||')');
       cooperativas_ocupadas(recorredor.COOPE) := recorredor.NOMBRE;
       contador_impresor1 := contador_impresor1 + 1;
-
     end if;
-
   end loop;
 
   DBMS_OUTPUT.PUT_LINE('}');
@@ -79,10 +77,8 @@ begin
     end if;
 
     recorredor_arreglo := total_cooperativas.NEXT(recorredor_arreglo);
-
   end loop;
 
   DBMS_OUTPUT.PUT_LINE('}');
-
 end;
 /

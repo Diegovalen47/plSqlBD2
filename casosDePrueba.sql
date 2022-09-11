@@ -20,7 +20,6 @@ INSERT INTO coopexsocio VALUES (60, 1, NULL);
 INSERT INTO coopexsocio VALUES (99, 1, 453);
 INSERT INTO coopexsocio VALUES (60, 5, 345354);
 INSERT INTO coopexsocio VALUES (99, 5, NULL);
-
 -- Caso de prueba updateTriggerCoop
 UPDATE COOPERATIVA SET C_ACUMULADO = C_ACUMULADO + 100 WHERE CODIGO = 1;
 UPDATE COOPERATIVA SET C_ACUMULADO = C_ACUMULADO + 60 WHERE CODIGO = 5;
@@ -28,14 +27,14 @@ UPDATE COOPERATIVA SET C_ACUMULADO = C_ACUMULADO + 60 WHERE CODIGO = 5;
 DELETE FROM COOPERATIVA WHERE CODIGO = 1;
 -- Casos de prueba deleteSocioTrigger
 DELETE FROM SOCIO WHERE IDSOCIO = 99;
-
--- Casos de prueba programa1 y programa2
+-- Casos de prueba
+-- programa1
 begin
   PROGRAMA1(1);
   PROGRAMA1(4);
   PROGRAMA1(5);
 end;
-
+-- programa2
 begin
   PROGRAMA2(99);
   PROGRAMA2(60);
