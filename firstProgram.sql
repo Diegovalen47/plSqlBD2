@@ -4,7 +4,7 @@ CREATE PROCEDURE programa1
     acumulado_cooperativa COOPERATIVA.C_ACUMULADO%TYPE;
     cantidad_socios NUMBER(8);
     valor_scAcumulado_socios COOPEXSOCIO.SC_ACUMULADO%TYPE:=0;
-    CURSOR socios_programa_1 IS SELECT * from SOCIO INNER JOIN COOPEXSOCIO ON SOCIO.IDSOCIO=COOPEXSOCIO.SOCIO;
+    CURSOR socios_programa_1 IS SELECT * FROM SOCIO INNER JOIN COOPEXSOCIO ON SOCIO.IDSOCIO=COOPEXSOCIO.SOCIO;
     contador_impresor NUMBER(8):=1;
 BEGIN
     SELECT NOMBRE, C_ACUMULADO INTO nombre_cooperativa,acumulado_cooperativa  FROM COOPERATIVA WHERE CODIGO=codigo_cooperativa;
