@@ -53,6 +53,11 @@ begin
 
   DBMS_OUTPUT.PUT_LINE('}');
   DBMS_OUTPUT.PUT_LINE('Total valores de los socios en la cooperativa: '||valor_scAcumulado_socios);
+
+  exception
+  when OTHERS then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
+
 end;
 /
 

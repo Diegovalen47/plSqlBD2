@@ -80,5 +80,10 @@ begin
   end loop;
 
   DBMS_OUTPUT.PUT_LINE('}');
+
+  exception
+  when OTHERS then
+    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
+
 end;
 /
