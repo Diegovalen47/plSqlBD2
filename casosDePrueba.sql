@@ -30,13 +30,13 @@ DELETE FROM SOCIO WHERE IDSOCIO = 99;
 -- Casos de prueba
 -- programa1
 begin
-  PROGRAMA1(1);
-  PROGRAMA1(4);
-  PROGRAMA1(5);
+  util.programaUno(1);
+  util.programaUno(4);
+  util.programaUno(5);
 end;
 -- programa2
 begin
-  PROGRAMA2(99);
-  PROGRAMA2(60);
-  PROGRAMA2(50);
+  util.programaDos(99);
+  util.programaDos(60);
+  util.programaDos(50);
 end;

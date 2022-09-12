@@ -20,9 +20,8 @@ begin
   -- borrar esos socios de coopexsocio
   DELETE FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;
 
-  exception
+exception
   when OTHERS then
     DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
-
 end;
 /

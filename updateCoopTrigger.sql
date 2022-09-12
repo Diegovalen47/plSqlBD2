@@ -39,7 +39,7 @@ begin
 
   end if;
 
-  exception
+exception
   when INCREMENTO_NULO then
     DBMS_OUTPUT.PUT_LINE(SQLERRM|| ' No se incrementa nada');
   when INCREMENTO_NEGATIVO then
@@ -50,6 +50,5 @@ begin
     :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
   when OTHERS then
     DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
-
 end;
 /

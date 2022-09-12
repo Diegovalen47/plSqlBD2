@@ -7,9 +7,8 @@ begin
     :NEW.s_acumulado := 0;
   end if;
 
-  exception
+exception
   when OTHERS then
     DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
-
 end;
 /

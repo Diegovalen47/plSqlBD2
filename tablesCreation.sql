@@ -18,5 +18,3 @@ CREATE TABLE coopexsocio (
   PRIMARY KEY(socio, coope),
   sc_acumulado NUMBER(11,3)
 );
-
-commit;

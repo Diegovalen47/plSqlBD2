@@ -14,7 +14,6 @@ CREATE OR REPLACE PACKAGE BODY extra IS
     sociosNames util.ARRAYSTRING;
     sociosLastNames util.ARRAYSTRING;
     cont NUMBER(4) := 0;
-
   begin
 
     --Nombres
