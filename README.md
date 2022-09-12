@@ -12,8 +12,8 @@
 2. casosDePrueba.sql: Filas para simular el ejemplo del enunciado
 3. packageUtil.sql: Instrucciones para creacion de paquete con tipos y procedimientos utilies para el trabajo:
 
-- programaUno: Primer programa del enunciado (20%)
-- prgramaDos: Segundo programa del enunciado (21%)
+  - programaUno: Primer programa del enunciado (20%)
+  - programaDos: Segundo programa del enunciado (21%)
 
 4. coopInsertTrigger.sql: Trigger de inserción tabla cooperativa c_acumulado = 0 (3%)
 5. socioInsertTrigger.sql: Trigger de inserción tabla socio s_acumulado = 0 (3%)
