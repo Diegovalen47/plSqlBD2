@@ -4,6 +4,8 @@ CREATE OR REPLACE PACKAGE extra IS
 
     PROCEDURE fillCoo(numRows In NUMBER);
 
+    PROCEDURE fillCoopexSocio(numRows In NUMBER);
+
 END;
 /
 
@@ -15,7 +17,6 @@ CREATE OR REPLACE PACKAGE BODY extra IS
     sociosLastNames util.ARRAYSTRING;
     cont NUMBER(4) := 0;
   begin
-
     --Nombres
     sociosNames(1) := 'Rhianna';
     sociosNames(2) := 'Kyla';
@@ -105,5 +106,31 @@ CREATE OR REPLACE PACKAGE BODY extra IS
       end;
     end loop;
   end;
+
+    PROCEDURE fillCoopexSocio(numRows IN NUMBER) IS
+        socio util.SOCIOTYPE;
+        coope util.COOPETYPE;
+        sizeSocio number;
+        sizeCoope number;
+
+        begin
+            select * bulk collect into socio from SOCIO order by IDSOCIO;
+            select * bulk collect into coope from COOPERATIVA order by CODIGO;
+            sizeSocio := socio.COUNT;
+            sizeCoope := coope.COUNT;
+            for i in 1 .. numRows loop
+                begin
+                    insert into COOPEXSOCIO values (socio(ceil(DBMS_RANDOM.VALUE(1,sizeSocio))).idsocio,
+                                                    COOPE(ceil(DBMS_RANDOM.VALUE(1,sizeSocio))).codigo
+                                                    ,null);
+                    exception
+                        when DUP_VAL_ON_INDEX then
+                            DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+                            DBMS_OUTPUT.PUT_LINE('Error con unique');
+                        when OTHERS then
+                            DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+                end;
+            end loop;
+        end;
 END;
 /

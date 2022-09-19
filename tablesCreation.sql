@@ -14,7 +14,9 @@ CREATE TABLE socio (
 
 CREATE TABLE coopexsocio (
   socio NUMBER(8) REFERENCES socio,
-  coope NUMBER(11, 3) REFERENCES cooperativa,
+  coope NUMBER(8) REFERENCES cooperativa,
   PRIMARY KEY(socio, coope),
   sc_acumulado NUMBER(11,3)
 );
+
+commit;
