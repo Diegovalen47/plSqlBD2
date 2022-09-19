@@ -1,21 +1,23 @@
-create or replace trigger triggerSocioDML before insert or delete on SOCIO for each row
+CREATE OR REPLACE TRIGGER triggerSocioDML
+BEFORE INSERT OR DELETE ON SOCIO
+FOR EACH ROW
+begin
+  if INSERTING then
     begin
-        if inserting then
-            begin
-                if (:new.s_acumulado IS NULL) or (:new.s_acumulado != 0) then
-                    :new.s_acumulado := 0;
-                end if;
-                exception
-                    when others then
-                    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
-            end;
-        end if;
-        if deleting then
-            begin
-                delete from COOPEXSOCIO where SOCIO = :old.IDSOCIO;
-                exception
-                    when others then
-                    DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
-            end;
-        end if;
+      if (:new.s_acumulado IS NULL) or (:new.s_acumulado != 0) then
+        :new.s_acumulado := 0;
+      end if;
+    exception
+      when others then
+      DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
     end;
+  end if;
+  if DELETING then
+    begin
+      delete from COOPEXSOCIO where SOCIO = :old.IDSOCIO;
+    exception
+      when others then
+      DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);
+    end;
+  end if;
+end;

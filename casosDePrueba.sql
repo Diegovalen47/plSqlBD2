@@ -27,6 +27,16 @@ UPDATE COOPERATIVA SET C_ACUMULADO = C_ACUMULADO + 60 WHERE CODIGO = 5;
 DELETE FROM COOPERATIVA WHERE CODIGO = 1;
 -- Casos de prueba deleteSocioTrigger
 DELETE FROM SOCIO WHERE IDSOCIO = 99;
+
+-- casos extra
+
+-- socio que no esta en ninguna cooperativa
+INSERT INTO socio VALUES (400, 'Bergoglio', NULL);
+-- socio que esta en todas las cooperativas
+INSERT INTO socio VALUES (69, 'Orozco', NULL);
+INSERT INTO coopexsocio VALUES (69, 1, NULL);
+INSERT INTO coopexsocio VALUES (69, 4, NULL);
+INSERT INTO coopexsocio VALUES (69, 5, NULL);
 -- Casos de prueba
 -- programa1
 begin
@@ -39,4 +49,6 @@ begin
   PROGRAM.DOS(99);
   PROGRAM.DOS(60);
   PROGRAM.DOS(50);
+  PROGRAM.DOS(400);
+  PROGRAM.DOS(69);
 end;
