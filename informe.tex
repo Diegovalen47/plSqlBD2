@@ -112,8 +112,7 @@ forall i in 1..arrayCoopexsocio.COUNT
 forall i in 1..arrayCoopexsocio.COUNT
   UPDATE COOPEXSOCIO 
   SET SC_ACUMULADO = SC_ACUMULADO + incrementoUnitario
-  WHERE SOCIO = arrayCoopexsocio(i).SOCIO 
-  AND COOPE = coopeCodigo;
+  WHERE SOCIO = arrayCoopexsocio(i).SOCIO AND COOPE = coopeCodigo;
 \end{lstlisting}
 \end{enumerate}
 \section{Trigger de borrado sobre la tabla cooperativa}
@@ -156,8 +155,7 @@ begin
   SELECT DISTINCT nombre, C_ACUMULADO, COUNT(*)
   INTO nameCoope, cAcumulado, cantSocios
   FROM COOPERATIVA INNER JOIN COOPEXSOCIO C2 
-  ON COOPERATIVA.CODIGO = C2.COOPE 
-  AND c2.COOPE = codigoCoope
+  ON COOPERATIVA.CODIGO = C2.COOPE AND c2.COOPE = codigoCoope
   GROUP BY nombre, C_ACUMULADO;
 exception
 when NO_DATA_FOUND then
