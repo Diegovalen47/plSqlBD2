@@ -14,7 +14,7 @@ begin
   end if;
   if DELETING then
     begin
-      delete from COOPEXSOCIO where SOCIO = :old.IDSOCIO;
+      DELETE FROM COOPEXSOCIO WHERE SOCIO = :old.IDSOCIO;
     exception
       when others then
       DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||sqlcode);

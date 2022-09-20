@@ -5,7 +5,6 @@ FOR EACH ROW
 begin
   if INSERTING then
     begin
-      DBMS_OUTPUT.PUT_LINE('as');
       if (:NEW.c_acumulado IS NULL) or (:NEW.c_acumulado != 0) then
         :NEW.c_acumulado := 0;
       end if;
@@ -22,8 +21,6 @@ begin
       coopeCodigo NUMBER(8) := :OLD.CODIGO;
 
     begin
-      DBMS_OUTPUT.PUT_LINE(coopeCodigo);
-      DBMS_OUTPUT.PUT_LINE('ENTRE');
       -- obtenemos socios que pertenecen a la cooperativa borrada
       SELECT SOCIO, COOPE, SC_ACUMULADO BULK COLLECT INTO arrayCoopexsocio
       FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;
@@ -55,11 +52,7 @@ begin
       INCREMENTO_NULO EXCEPTION;
 
     begin
-      DBMS_OUTPUT.PUT_LINE('ala');
       incrementoTotal := :NEW.C_ACUMULADO - :OLD.C_ACUMULADO;
-      if :new.codigo != :old.codigo then
-          DBMS_OUTPUT.PUT_LINE('ow');
-      end if;
       if incrementoTotal > 0 then
         -- obtenemos socios que pertenecen a la cooperativa a actualizar
         SELECT SOCIO, COOPE, SC_ACUMULADO BULK COLLECT INTO arrayCoopexsocio
@@ -87,7 +80,6 @@ begin
         :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
       when ZERO_DIVIDE then
         DBMS_OUTPUT.PUT_LINE(SQLCODE|| ' La cooperativa ingresada no tiene socios');
-        :NEW.C_ACUMULADO := :OLD.C_ACUMULADO;
       when OTHERS then
         DBMS_OUTPUT.PUT_LINE(SQLERRM||' '||SQLCODE);
     end;

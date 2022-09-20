@@ -2,7 +2,7 @@ CREATE OR REPLACE TRIGGER triggerCoopeSocioDML
 BEFORE INSERT ON COOPEXSOCIO
 FOR EACH ROW
 begin
-  if (:new.sc_acumulado is null) or (:new.sc_acumulado != 0) then
+  if (:new.sc_acumulado IS NULL) or (:new.sc_acumulado != 0) then
     :new.sc_acumulado := 0;
   end if;
 exception
