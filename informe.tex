@@ -1,0 +1,208 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx} % graficos
+\usepackage{multirow, array} % para las tablas
+\usepackage{float} % para usar [H]
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white}, 
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\normal,
+    breakatwhitespace=false,         
+    breaklines=true,
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=6pt,
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\graphicspath{ {images/} }
+\title{
+\begin{center}
+    \includegraphics[width=5cm, height=5cm]{unal.png}
+\end{center}
+\vspace{2cm}
+Bases de datos II \\
+}
+
+
+\author{
+\vspace{5cm}
+Primer trabajo PL/SQL \\
+Diego Valentín Osorio Marín \\
+Jan Michael Muñóz Botero \\
+Santiago Castro Tabares 
+\vspace{7cm}}
+\date{Septiembre 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Configuración inicial del código}
+Para poder ejecutar las pruebas al código, por favor ejecutar los archivos en el siguiente orden:
+\begin{enumerate}
+    \begin{enumerate}
+        \item \emph{tablesCreation.sql:} Para crear las tablas del enunciado.
+        \item \emph{packageUtil.sql:} Definición de tipos utilizados en todo el programa.
+        \item \emph{triggerCoope.sql:} Triggers asociados a la tabla cooperativa.
+        \item \emph{triggerCoopeSocio.sql:} Triggers asociados a la tabla coopexsocio.
+        \item \emph{triggerSocio.sql:} Trigger asociados a la tabla socio.
+        \item \emph{packagePrograms:} De aquí se pueden llamar los procedimientos para los programas uno y dos.
+    \end{enumerate}
+\end{enumerate}
+Una vez hecho esto, proceda a ejecutar sus casos de prueba deseados.
+\section{Trigger de inserción tablas cooperativa, socio y coopexsocio}
+Se utilizó un trigger de tipo fila y momento before, donde simplemente se controla que:
+\begin{enumerate}
+        \item Si el valor nuevo del acumulado a ingresar es NULL o es diferente de cero, entonces se cambie este valor a cero.
+\end{enumerate}
+\section{Trigger de actualización sobre la tabla cooperativa}
+Se utilizó un trigger de tipo fila y momento before, donde:
+\begin{enumerate}
+        \item Se calcula la diferencia entre el valor nuevo de acumulado y el valor antiguo obteniendo así el incremento en la cooperativa.
+        \item En los casos en que esta diferencia sea cero o negativa, se definen excepciones para controlar esto.
+        \item Por otro lado, cuando el incremento es mayor a cero, obtenemos los socios que pertenecen a la cooperativa a actualizar, Por otro lado, cuando el incremento es mayor a cero, obtenemos los socios que pertenecen a la cooperativa a actualizar, guardando estos registros en un arreglo mediante una sentencia BULK COLLECT de la siguiente manera:
+\begin{lstlisting}[language=SQL]
+SELECT SOCIO, COOPE, SC_ACUMULADO 
+BULK COLLECT INTO arrayCoopexsocio
+FROM COOPEXSOCIO
+WHERE COOPE = coopeCodigo;
+\end{lstlisting}
+\item Luego obtenemos el incremento unitario, es decir cuanto le toca a cada socio en su acumulado, dividiendo el incremento total sobre la cantidad de socios, de la siguiente forma:
+
+\begin{lstlisting}[language=SQL]
+incrementoUnitario := incrementoTotal/arrayCoopexsocio.COUNT;
+\end{lstlisting}
+\item Por último, actualizamos las tablas socio y coopexsocio con los incrementos unitarios que le corresponden a cada uno, utilizando sentencias forall, de la siguiente forma:
+\begin{lstlisting}[language=SQL]
+forall i in 1..arrayCoopexsocio.COUNT
+  UPDATE SOCIO SET S_ACUMULADO = S_ACUMULADO + incrementoUnitario
+  WHERE IDSOCIO = arrayCoopexsocio(i).SOCIO;
+
+\end{lstlisting}
+\begin{lstlisting}[language=SQL]
+forall i in 1..arrayCoopexsocio.COUNT
+  UPDATE COOPEXSOCIO SET SC_ACUMULADO = SC_ACUMULADO + incrementoUnitario
+  WHERE SOCIO = arrayCoopexsocio(i).SOCIO AND COOPE = coopeCodigo;
+\end{lstlisting}
+\end{enumerate}
+\section{Trigger de borrado sobre la tabla cooperativa}
+Se utilizó un trigger de tipo fila y momento before, donde:
+\begin{enumerate}
+    \item Primero obtenemos los socios que pertenecen a la cooperativa a ser borrada, declarando un arreglo y guardando estas filas en el mediante la sentencia BULK COLLECT de la siguiente manera:
+    \begin{lstlisting}[language=SQL]
+SELECT SOCIO, COOPE, SC_ACUMULADO BULK COLLECT INTO arrayCoopexsocio
+FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;   \end{lstlisting}
+    \item la sentencia forall, decrementamos en sc\_acumulado  el s\_acumualdo de cada uno de los socios afectados por el borrado, de la siguente manera:
+    \begin{lstlisting}[language=SQL]
+forall i in 1..arrayCoopexsocio.COUNT
+  UPDATE SOCIO SET S_ACUMULADO = S_ACUMULADO - arrayCoopexsocio(i).SC_ACUMULADO
+  WHERE IDSOCIO = arrayCoopexsocio(i).SOCIO;\end{lstlisting}
+  \item Finalmente, borramos los socios de la tabla coopexsocio
+  \begin{lstlisting}[language=SQL]
+DELETE FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;    \end{lstlisting}
+\end{enumerate}
+\section{Trigger de borrado sobre la tabla socio}
+Se utilizó un trigger de tipo fila y momento before, donde:
+\begin{enumerate}
+    \item Simplemente borramos de la tabla coopexsocio los registros donde el id del socio a borrar coincidan, de la siguiente forma:
+    \begin{lstlisting}[language=SQL]
+    DELETE FROM COOPEXSOCIO WHERE SOCIO = :old.IDSOCIO;    \end{lstlisting}
+\end{enumerate}
+\section{Primer programa}
+Se crea un procedimiento llamado uno que recibe el código de una cooperativa, dentro de este procedimiento se crea un cursor llamado \emph{header} para guardar la query SQL (en esta hacemos un JOIN donde la columna coope de la tabla COOPEXSOCIO sea igual al código ingresado al procedimiento y de este JOIN guardamos el nombre de la columna SOCIO y el sc\_acumulado de COOPEXSOCIO).
+\begin{enumerate}
+    \item Simplemente borramos de la tabla coopexsocio los registros donde el id del socio a borrar coincidan, de la siguiente forma:
+    \begin{lstlisting}[language=SQL]
+    cursor header IS
+      SELECT NOMBRE, C2.SC_ACUMULADO
+      FROM SOCIO S JOIN COOPEXSOCIO C2 ON S.IDSOCIO = C2.SOCIO
+      WHERE c2.COOPE = codigoCoope;+\end{lstlisting}
+\end{enumerate}
+      Luego creamos un bloque y dentro de este creamos un sub bloque en donde realizamos una query SQL (en esta hacemos un INNER JOIN donde la columna codigo de COOPERATIVA sea igual a la columna coope de la tabla COOPEXSOCIO y coope sea igual al codigo ingresado al procedimiento y de este INNER JOIN guardamos el nombre, el c\_acumulado de la tabla COOPERATIVA y hacemos un count(*) (esto con la intención de contar el número de socios en esta cooperativa), luego controlamos la excepción en el caso de que no encuentre socios para la cooperativa ingresada.
+    \begin{lstlisting}[language=SQL]
+    begin
+
+      begin
+        SELECT DISTINCT nombre, C_ACUMULADO, COUNT(*)
+        INTO nameCoope, cAcumulado, cantSocios
+        FROM COOPERATIVA
+        INNER JOIN COOPEXSOCIO C2 
+        ON COOPERATIVA.CODIGO = C2.COOPE AND c2.COOPE = codigoCoope
+        GROUP BY nombre, C_ACUMULADO;
+      exception
+        when NO_DATA_FOUND then
+          SELECT NOMBRE, C_ACUMULADO
+          INTO nameCoope, cAcumulado
+          FROM COOPERATIVA
+          WHERE CODIGO = codigoCoope;
+          cantSocios := 0;
+      end;\end{lstlisting}
+Luego procedemos a imprimir todo en el orden indicado en el trabajo, imprimimos el nombre de la cooperativa, el c\_acumulado, la cantidad de socios y luego para imprimir los socios de la cooperativa usamos el cursor en donde cada fila tenemos el nombre del socio y el sc\_acumulado y en otra variable vamos acumulando el sc\_acumulado para imprimirlo al final.
+\begin{lstlisting}[language=SQL]
+for i in header loop
+    DBMS_OUTPUT.PUT_LINE(cont||'. (Nombre: '||i.NOMBRE||', Valorsc: '||i.SC_ACUMULADO||')');
+    totalAcumulado := totalAcumulado + i.SC_ACUMULADO;
+    cont := cont + 1;
+end loop;
+\end{lstlisting}
+Por último controlamos la excepción de que el codigo ingresado por el usuario no corresponda a ninguna cooperativa existente y el others que se recomienda colocarlo al final.
+\begin{lstlisting}[language=SQL]
+exception
+    when NO_DATA_FOUND then
+      DBMS_OUTPUT.PUT_LINE(SQLCODE||' La Cooperativa ingresada no existe');
+    when others then
+      DBMS_OUTPUT.PUT_LINE(SQLCODE || ' ' || SQLERRM);
+end;
+\end{lstlisting}
+\section{Segundo programa}
+En el paquete program se encuentra el procedimiento dos, que tiene como entrada el parámetro del código del socio (\emph{codigoSocio}) del cual se va a mostrar la información requerida.
+Para obtener todas las cooperativas a las que pertenece el socio se crea un cursor (\emph{header}) con la siguiente query SQL: 
+
+\begin{lstlisting}[language=SQL]
+cursor header is
+SELECT C4.NOMBRE, C3.SC_ACUMULADO
+FROM COOPERATIVA C4 INNER JOIN COOPEXSOCIO C3 ON C4.CODIGO = C3.COOPE
+WHERE c3.SOCIO = codigoSocio;
+\end{lstlisting}
+En la cual se obtiene el nombre y el acumulado de la cooperativa en la cual participa el socio con el código.
+Para obtener todas las cooperativas en las que no participa el socio, se crea un cursor (\emph{footer}) con la siguiente query SQL: 
+\begin{lstlisting}[language=SQL]
+cursor footer is
+  SELECT NOMBRE
+  FROM cooperativa
+  LEFT JOIN COOPEXSOCIO C2 ON COOPERATIVA.CODIGO = C2.COOPE AND C2.SOCIO = codigoSocio
+  WHERE SOCIO IS NULL;
+\end{lstlisting}
+En el cual se obtiene el nombre de todas las cooperativas que tienen como socio null con la ayuda de un left join
+Una vez definidos los dos cursores para obtener las cooperativas a las que pertenece y a las que no, se obtiene mediante un query SQL para obtener el nombre, el acumulado y la cantidad de cooperativas en las que participa, dicha query se encapsula en un sub bloque para controlar el error: NO\_DATA\_FOUND y poder manejar el caso en el que el socio no participa en ninguna cooperativa
+
+La impresión se lleva acabo abriendo y manipulando los cursores con el uso del loop for que se encuentran en el bloque más alto para poder manejar el error NO\_DATA\_FOUND pero en este caso este se dispara solo cuando el código del socio ingresado no se encuentra en la base de datos
+\end{document}
