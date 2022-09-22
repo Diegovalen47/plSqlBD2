@@ -2,9 +2,17 @@ CREATE OR REPLACE TRIGGER triggerCoopeDML
 BEFORE INSERT OR DELETE OR UPDATE
 OF C_ACUMULADO ON COOPERATIVA
 FOR EACH ROW
+/*
+ *   Trigger que se ejecuta antes de insertar, actualizar o borrar un registro de la tabla COOPERATIVA
+ *   con la ayuda de If Insert, If Update y If Delete se puede determinar si se esta insertando, actualizando o borrando
+ */
 begin
   if INSERTING then
     begin
+        /*
+         *  Si se esta insertando un registro en la tabla COOPERATIVA
+         *  se establece que el campo C_ACUMULADO sea igual a 0
+         */
       if (:NEW.c_acumulado IS NULL) or (:NEW.c_acumulado != 0) then
         :NEW.c_acumulado := 0;
       end if;
@@ -14,6 +22,12 @@ begin
     end;
   end if;
   if DELETING then
+      /*
+       *  Si se esta borrando un registro en la tabla COOPERATIVA
+       *  se decrementa el acumulado de los socios que participaron en la cooperativa
+       *  en valor igual al que tenian en la cooperativa
+       *  y se borra el registro de la tabla COOPERATIVA
+       */
     declare
       -- Array para guardar registros de coopexsocio
       arrayCoopexsocio util.COOPEXSOCIOTYPE;
@@ -39,6 +53,11 @@ begin
       end;
   end if;
   if UPDATING then
+      /*
+       * Si se esta actualizando un registro en la tabla COOPERATIVA
+       * se actualiza el acumulado de los socios que participaron en la cooperativa
+       * además no se permiten incrementos en el acumulado de la cooperativa negativos
+       */
     declare
       -- Array para guardar registros de coopexsocio
       arrayCoopexsocio util.COOPEXSOCIOTYPE;

@@ -1,4 +1,6 @@
--- Creacion de tablas
+/*
+ * Creación de todas las tablas de la base de datos
+ */
 
 CREATE TABLE cooperativa (
   codigo NUMBER(8) PRIMARY KEY,

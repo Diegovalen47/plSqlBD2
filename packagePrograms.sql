@@ -1,4 +1,8 @@
+
 CREATE OR REPLACE PACKAGE program IS
+    /*
+     *   Este es un paquete que contiene el código de la solucion del programa 1 y 2
+     */
   PROCEDURE uno(codigoCoope IN COOPERATIVA.CODIGO%TYPE);
   PROCEDURE dos(codigoSocio IN SOCIO.IDSOCIO%TYPE);
 end;
@@ -6,6 +10,13 @@ end;
 CREATE OR REPLACE PACKAGE BODY program IS
 
   PROCEDURE uno(codigoCoope in COOPERATIVA.CODIGO%type) IS
+    /*
+     *  Este procedimiento recibe el codigo de una cooperativa y muestra el nombre de la cooperativa, el acumulado,
+     *  número de socios y nombre de los socios que pertenecen a ella asi como el total de los aportes de cada socio
+     *  y el total de todos ellos
+     *
+     *  @param codigoCoope: Código de la cooperativa que ingresa el usuario
+     */
     nameCoope COOPERATIVA.NOMBRE%TYPE;
     cAcumulado COOPERATIVA.C_ACUMULADO%TYPE;
     cantSocios NUMBER(8);
@@ -13,17 +24,17 @@ CREATE OR REPLACE PACKAGE BODY program IS
     cont NUMBER(8) := 1;
 
     cursor header IS
-      SELECT NOMBRE, C2.SC_ACUMULADO
+      SELECT S.NOMBRE, C2.SC_ACUMULADO
       FROM SOCIO S JOIN COOPEXSOCIO C2 ON S.IDSOCIO = C2.SOCIO
-      WHERE c2.COOPE = codigoCoope;
+      WHERE C2.COOPE = codigoCoope;
 
     begin
 
       begin
-        SELECT DISTINCT nombre, C_ACUMULADO, COUNT(*)
+        SELECT DISTINCT C1.NOMBRE, C1.C_ACUMULADO, COUNT(*)
         INTO nameCoope, cAcumulado, cantSocios
-        FROM COOPERATIVA INNER JOIN COOPEXSOCIO C2 ON COOPERATIVA.CODIGO = C2.COOPE AND c2.COOPE = codigoCoope
-        GROUP BY nombre, C_ACUMULADO;
+        FROM COOPERATIVA C1 INNER JOIN COOPEXSOCIO C2 ON C1.CODIGO = C2.COOPE AND C2.COOPE = codigoCoope
+        GROUP BY NOMBRE, C_ACUMULADO;
       exception
         when NO_DATA_FOUND then
           SELECT NOMBRE, C_ACUMULADO
@@ -54,28 +65,36 @@ CREATE OR REPLACE PACKAGE BODY program IS
     end;
 
   PROCEDURE dos(codigoSocio in SOCIO.idsocio%type) IS
-    nameSocio socio.nombre%type;
-    sAcumulado socio.s_acumulado%type;
+      /*
+       *  Este procedimiento recibe el codigo de un socio y muestra el nombre del socio, el acumulado,
+       *  número de cooperativas y nombre de las cooperativas a las que pertenece asi como el total que tiene en cada cooperativa
+       *  y todas las cooperativas en las que no participa
+       *
+       *  @param codigoSocio: Código del socio que ingresa el usuario
+       *
+       */
+    nameSocio socio.NOMBRE%type;
+    sAcumulado socio.S_ACUMULADO%type;
     cantCoope NUMBER(8);
     cont NUMBER(8) := 1;
 
     cursor header is
       SELECT C4.NOMBRE, C3.SC_ACUMULADO
       FROM COOPERATIVA C4 INNER JOIN COOPEXSOCIO C3 ON C4.CODIGO = C3.COOPE
-      WHERE c3.SOCIO = codigoSocio;
+      WHERE C3.SOCIO = codigoSocio;
 
     cursor footer is
-      SELECT NOMBRE
-      FROM cooperativa
-      LEFT JOIN COOPEXSOCIO C2 ON COOPERATIVA.CODIGO = C2.COOPE AND C2.SOCIO = codigoSocio
+      SELECT C1.NOMBRE
+      FROM COOPERATIVA C1
+      LEFT JOIN COOPEXSOCIO C2 ON C1.CODIGO = C2.COOPE AND C2.SOCIO = codigoSocio
       WHERE SOCIO IS NULL;
 
     begin
 
       begin
-        SELECT DISTINCT s.NOMBRE, s.S_ACUMULADO, count(*)
+        SELECT DISTINCT S.NOMBRE, S.S_ACUMULADO, count(*)
         INTO nameSocio, sAcumulado, cantCoope
-        FROM socio s INNER JOIN COOPEXSOCIO C2 ON s.IDSOCIO = C2.SOCIO AND c2.SOCIO = codigoSocio
+        FROM SOCIO S INNER JOIN COOPEXSOCIO C2 ON S.IDSOCIO = C2.SOCIO AND C2.SOCIO = codigoSocio
         GROUP BY NOMBRE, S_ACUMULADO;
       exception
         when NO_DATA_FOUND then
