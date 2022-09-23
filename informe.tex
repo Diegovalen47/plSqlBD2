@@ -23,21 +23,21 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \lstdefinestyle{mystyle}{
-    backgroundcolor=\color{white}, 
+    backgroundcolor=\color{white},
     commentstyle=\color{codegreen},
     keywordstyle=\color{blue},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codegreen},
     basicstyle=\ttfamily\normal,
-    breakatwhitespace=false,         
+    breakatwhitespace=false,
     breaklines=true,
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
     numbersep=6pt,
-    showspaces=false,                
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
 \setlength{\parindent}{0pt}
@@ -157,7 +157,7 @@ Se utilizó un trigger de tipo fila y momento before, donde:
     \begin{enumerate}[4.1]
         \item Primero obtenemos los socios que pertenecen a la cooperativa a ser borrada, declarando un arreglo y guardando estas filas en el mediante la sentencia BULK COLLECT de la siguiente manera:
  \begin{lstlisting}[language=SQL,label={lst:lstlisting6}]
-SELECT SOCIO, COOPE, SC_ACUMULADO 
+SELECT SOCIO, COOPE, SC_ACUMULADO
 BULK COLLECT INTO arrayCoopexsocio
 FROM COOPEXSOCIO WHERE COOPE = coopeCodigo;   \end{lstlisting}
 
@@ -233,7 +233,9 @@ Por último controlamos la excepción de que el codigo ingresado por el usuario 
 \begin{lstlisting}[language=SQL,label={lst:lstlisting13}]
 exception
   when NO_DATA_FOUND then
-    DBMS_OUTPUT.PUT_LINE(SQLCODE||' La Cooperativa ingresada no existe');
+    DBMS_OUTPUT.PUT_LINE(
+      SQLCODE||' La Cooperativa ingresada no existe: '||codigoCoope
+    );
   when others then
     DBMS_OUTPUT.PUT_LINE(SQLCODE || ' ' || SQLERRM);
 end;
@@ -241,17 +243,17 @@ end;
 
 \section{Segundo programa}
 En el paquete program se encuentra el procedimiento dos, que tiene como entrada el parámetro del código del socio (\emph{codigoSocio}) del cual se va a mostrar la información requerida.
-Para obtener todas las cooperativas a las que pertenece el socio se crea un cursor (\emph{header}) con la siguiente query SQL: 
+Para obtener todas las cooperativas a las que pertenece el socio se crea un cursor (\emph{header}) con la siguiente query SQL:
 
 \begin{lstlisting}[language=SQL,label={lst:lstlisting14}]
 cursor header is
   SELECT C4.NOMBRE, C3.SC_ACUMULADO
-  FROM COOPERATIVA C4 INNER JOIN COOPEXSOCIO C3 
+  FROM COOPERATIVA C4 INNER JOIN COOPEXSOCIO C3
   ON C4.CODIGO = C3.COOPE
   WHERE C3.SOCIO = codigoSocio;
 \end{lstlisting}
 En la cual se obtiene el nombre y el acumulado de la cooperativa en la cual participa el socio con el código.
-Para obtener todas las cooperativas en las que no participa el socio, se crea un cursor (\emph{footer}) con la siguiente query SQL: 
+Para obtener todas las cooperativas en las que no participa el socio, se crea un cursor (\emph{footer}) con la siguiente query SQL:
 \begin{lstlisting}[language=SQL,label={lst:lstlisting15}]
 cursor footer is
   SELECT C1.NOMBRE

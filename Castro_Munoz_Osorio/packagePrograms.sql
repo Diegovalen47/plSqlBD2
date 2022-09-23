@@ -1,4 +1,3 @@
-
 CREATE OR REPLACE PACKAGE program IS
     /*
      *   Este es un paquete que contiene el código de la solucion del programa 1 y 2
@@ -59,8 +58,10 @@ CREATE OR REPLACE PACKAGE BODY program IS
       DBMS_OUTPUT.PUT_LINE('Total valores de los socios en la cooperativa: '||totalAcumulado);
     exception
       when NO_DATA_FOUND then
-        DBMS_OUTPUT.PUT_LINE(SQLCODE||' La Cooperativa ingresada no existe');
+        DBMS_OUTPUT.PUT_LINE(' ');
+        DBMS_OUTPUT.PUT_LINE(SQLCODE||' La Cooperativa ingresada no existe: '||codigoCoope);
       when others then
+        DBMS_OUTPUT.PUT_LINE(' ');
         DBMS_OUTPUT.PUT_LINE(SQLCODE || ' ' || SQLERRM);
     end;
 
@@ -126,8 +127,10 @@ CREATE OR REPLACE PACKAGE BODY program IS
       DBMS_OUTPUT.PUT_LINE('}');
     exception
       when NO_DATA_FOUND then
-        DBMS_OUTPUT.PUT_LINE(SQLCODE||' El socio ingresado no existe');
+        DBMS_OUTPUT.PUT_LINE(' ');
+        DBMS_OUTPUT.PUT_LINE(SQLCODE||' El socio ingresado no existe: '||codigoSocio);
       when others then
+        DBMS_OUTPUT.PUT_LINE(' ');
         DBMS_OUTPUT.PUT_LINE(SQLCODE || ' ' || SQLERRM);
     end;
 end;
